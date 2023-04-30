@@ -24,6 +24,7 @@ dependencies {
 
 	asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.0")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0")
+    implementation("org.springframework.restdocs:spring-restdocs-webtestclient:3.0.0")
 
 	implementation("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
