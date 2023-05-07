@@ -1,12 +1,13 @@
 package com.polarbookshop.catalogservice.web;
 
 import com.polarbookshop.catalogservice.domain.Book;
-import com.polarbookshop.catalogservice.persistence.InMemoryBookRepository;
+import com.polarbookshop.catalogservice.domain.BookRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
@@ -14,12 +15,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("integration-test")
 class BookControllerTest {
   @Autowired
   WebTestClient webTestClient;
 
   @Autowired
-  InMemoryBookRepository bookRepository;
+  BookRepository bookRepository;
 
   @AfterEach
   void tearDown() {
@@ -29,8 +31,8 @@ class BookControllerTest {
   @Test
   void itShouldSupportGettingAllBooks() {
     // GIVEN
-    Book expectedBook = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
-    Book expectedBook2 = new Book("0987654321", "Polar Journey 2", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    Book expectedBook = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
+    Book expectedBook2 = Book.of("0987654321", "Polar Journey 2", "Theodore Beauregard", 29.90, "publisher");
     bookRepository.save(expectedBook);
     bookRepository.save(expectedBook2);
 
@@ -41,13 +43,13 @@ class BookControllerTest {
       .expectStatus().isOk()
       .expectBody(new ParameterizedTypeReference<List<Book>>() {
       })
-      .value(books -> assertThat(books).containsExactlyInAnyOrder(expectedBook, expectedBook2));
+      .value(books -> assertThat(books).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id", "version", "createdDate", "lastModifiedDate").containsExactlyInAnyOrder(expectedBook, expectedBook2));
   }
 
   @Test
   void itShouldSupportGettingBookDetails() {
     // GIVEN
-    Book expectedBook = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    Book expectedBook = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     bookRepository.save(expectedBook);
 
     // WHEN/THEN
@@ -56,7 +58,7 @@ class BookControllerTest {
       .exchange()
       .expectStatus().isOk()
       .expectBody(Book.class)
-      .value(actualBook -> assertThat(actualBook).isEqualTo(expectedBook));
+      .value(actualBook -> assertThat(actualBook).usingRecursiveComparison().ignoringFields("id", "version", "createdDate", "lastModifiedDate").isEqualTo(expectedBook));
   }
 
   @Test
@@ -73,7 +75,7 @@ class BookControllerTest {
   @Test
   void whenPostingAValidBookItShouldBeCreated() {
     // GIVEN
-    Book expectedBook = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    Book expectedBook = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
 
     // WHEN/THEN
     webTestClient.post()
@@ -82,15 +84,15 @@ class BookControllerTest {
       .exchange()
       .expectStatus().isCreated()
       .expectBody(Book.class)
-      .value(actualBook -> {
-        assertThat(actualBook).usingRecursiveComparison().isEqualTo(expectedBook);
-      });
+      .value(actualBook -> assertThat(actualBook).usingRecursiveComparison()
+        .ignoringFields("id", "version", "createdDate", "lastModifiedDate")
+        .isEqualTo(expectedBook));
   }
 
   @Test
   void whenPostingABookWithAlreadyExistingISBNABadRequestResponseShallBeGiven() {
     // GIVEN
-    Book expectedBook = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    Book expectedBook = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     bookRepository.save(expectedBook);
 
     // WHEN/THEN
@@ -104,7 +106,7 @@ class BookControllerTest {
   @Test
   void itShouldSupportRemovingBooks() {
     // GIVEN
-    Book expectedBook = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    Book expectedBook = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     bookRepository.save(expectedBook);
 
     // WHEN/THEN
@@ -119,7 +121,7 @@ class BookControllerTest {
   @Test
   void itShouldSupportEditingBookDetails() {
     // GIVEN
-    Book expectedBook = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    Book expectedBook = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     bookRepository.save(expectedBook);
     Book newBook = expectedBook.withTitle("A Polar Journey");
     // WHEN/THEN
@@ -137,7 +139,7 @@ class BookControllerTest {
   @Test
   void itShouldValidateBookDetailsWhenCreating() {
     // GIVEN a book with an invalid ISBN
-    Book expectedBook = new Book("123456789", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    Book expectedBook = Book.of("123456789", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     // WHEN/THEN
     webTestClient.post()
       .uri("/books")
@@ -149,7 +151,7 @@ class BookControllerTest {
   @Test
   void itShouldValidateBookDetailsWhenEditing() {
     // GIVEN a book with an invalid title
-    Book expectedBook = new Book("1234567890", "", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    Book expectedBook = Book.of("1234567890", "", "Theodore Beauregard", 29.90, "publisher");
     bookRepository.save(expectedBook);
     Book newBook = expectedBook.withIsbn("1111");
     // WHEN/THEN

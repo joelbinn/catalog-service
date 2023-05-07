@@ -21,7 +21,7 @@ class BookTest {
   @Test
   void whenAllFieldsAreCorrectThenValidationSucceeds() {
     // GIVEN
-    Book book = new Book("1234567890", "title", "author", "description", 10.0);
+    Book book = Book.of("1234567890", "title", "author", 10.0, "publisher");
 
     // WHEN/THEN
     assertThat(validator.validate(book)).isEmpty();
@@ -30,7 +30,7 @@ class BookTest {
   @Test
   void shouldNotAllowBlankIsbn() {
     // GIVEN
-    Book book = new Book("", "title", "author", "description", 10.0);
+    Book book = Book.of("", "title", "author", 10.0, "publisher");
 
     // WHEN/THEN
     assertThat(validator.validate(book)).extracting("message").containsExactlyInAnyOrder("ISBN must not be blank.","ISBN must be a valid ISBN-10 or ISBN-13.");

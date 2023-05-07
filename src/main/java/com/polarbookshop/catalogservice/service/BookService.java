@@ -34,11 +34,15 @@ public class BookService {
     return bookRepository.findByIsbn(isbn)
       .map(existingBook -> {
         Book editedBook = new Book(
+          existingBook.id(),
           existingBook.isbn(),
           book.title(),
           book.author(),
-          book.description(),
-          book.price()
+          book.price(),
+          book.publisher(),
+          existingBook.version(),
+          existingBook.createdDate(),
+          existingBook.lastModifiedDate()
         );
         return bookRepository.save(editedBook);
       })

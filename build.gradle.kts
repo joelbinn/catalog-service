@@ -23,6 +23,7 @@ repositories {
 }
 
 extra["springCloudVersion"] = "2021.0.6"
+extra["testcontainersVersion"] = "1.17.3"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -33,6 +34,10 @@ dependencies {
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework.restdocs:spring-restdocs-webtestclient:3.0.0")
 	implementation("org.projectlombok:lombok")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.flywaydb:flyway-core")
+
+    runtimeOnly("org.postgresql:postgresql")
 
 	asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.0")
     annotationProcessor("org.projectlombok:lombok")
@@ -40,12 +45,14 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0")
+    testImplementation("org.testcontainers:postgresql")
     testAnnotationProcessor("org.projectlombok:lombok")
 }
 
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+        mavenBom ("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
     }
 }
 

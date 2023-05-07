@@ -27,7 +27,7 @@ class BookServiceTest {
   @Test
   void itShouldSupportViewingBooklist() {
     // GIVEN
-    var expected = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    var expected = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     when(bookRepository.findAll()).thenReturn(List.of(expected));
     // WHEN
     var actual = bookService.viewBooklist();
@@ -38,7 +38,7 @@ class BookServiceTest {
   @Test
   void itShouldSupportViewingBookDetails() {
     // GIVEN
-    var expected = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    var expected = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     when(bookRepository.findByIsbn("1234567890")).thenReturn(Optional.of(expected));
     // WHEN
     var actual = bookService.viewBookDetails(expected.isbn());
@@ -57,7 +57,7 @@ class BookServiceTest {
   @Test
   void itShouldSupportAddingBookToCatalog() {
     // GIVEN
-    var book = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    var book = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     when(bookRepository.existsByIsbn("1234567890")).thenReturn(false);
     when(bookRepository.save(book)).thenReturn(book);
     // WHEN
@@ -70,7 +70,7 @@ class BookServiceTest {
   @Test
   void itShouldFailWhenAddingSameBookMultipleTimesToBookToCatalog() {
     // GIVEN
-    var book = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
+    var book = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
     when(bookRepository.existsByIsbn(book.isbn())).thenReturn(true);
     // WHEN/THEN
     assertThatThrownBy(() -> bookService.addBookToCatalog(book)).isInstanceOf(BookAlreadyExistsException.class);
@@ -90,8 +90,8 @@ class BookServiceTest {
   @Test
   void itShouldSupportEditingBookDetails() {
     // GIVEN
-    var existingBook = new Book("1234567890", "Polar Journey", "Theodore Beauregard", "A tale of danger and survival on the icy seas.", 29.90);
-    var newBook = new Book(existingBook.isbn(), "Polar Journey 2", "Theodore Beauregard 2", "A tale of danger and survival on the icy seas 2.", 39.90);
+    var existingBook = Book.of("1234567890", "Polar Journey", "Theodore Beauregard", 29.90, "publisher");
+    var newBook = Book.of(existingBook.isbn(), "Polar Journey 2", "Theodore Beauregard 2", 39.90, "publisher");
     when(bookRepository.findByIsbn(existingBook.isbn())).thenReturn(Optional.of(existingBook));
     when(bookRepository.save(newBook)).thenAnswer(invocation -> invocation.getArgument(0));
     // WHEN
@@ -104,7 +104,7 @@ class BookServiceTest {
   @Test
   void itShouldFailEditingBookDetailsWhenNotFound() {
     // GIVEN
-    var newBook = new Book("1234567890", "Polar Journey 2", "Theodore Beauregard 2", "A tale of danger and survival on the icy seas 2.", 39.90);
+    var newBook = Book.of("1234567890", "Polar Journey 2", "Theodore Beauregard 2", 39.90, "publisher");
     when(bookRepository.findByIsbn(newBook.isbn())).thenReturn(Optional.empty());
     // WHEN/THEN
     assertThatThrownBy(() -> bookService.editBookDetails(newBook.isbn(), newBook)).isInstanceOf(BookNotFoundException.class);
