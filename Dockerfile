@@ -7,6 +7,8 @@ RUN java -Djarmode=layertools -jar catalog-service.jar extract
 
 # Stage 2: produce final container
 FROM eclipse-temurin:17
+RUN useradd spring
+USER spring
 WORKDIR workspace
 COPY --from=builder workspace/dependencies/ ./
 COPY --from=builder workspace/spring-boot-loader/ ./
