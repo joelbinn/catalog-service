@@ -5,6 +5,8 @@ import com.polarbookshop.catalogservice.domain.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class BookService {
@@ -40,6 +42,8 @@ public class BookService {
           book.author(),
           book.price(),
           book.publisher(),
+          Set.of(),
+          null,
           existingBook.version(),
           existingBook.createdDate(),
           existingBook.lastModifiedDate()

@@ -18,11 +18,14 @@ public class BookDataLoader {
   @EventListener(ApplicationReadyEvent.class)
   public void loadBookTestData() {
     bookRepository.deleteAll();
-    val book1 = Book.of("1234567891", "Northern Lights",
-      "Lyra Silverstar", 9.90, "publisher1");
+    val book1 = bookRepository.save(Book.of("1234567891", "Northern Lights",
+        "Lyra Silverstar", 9.90, "publisher1")
+      .withTagAdded("stuff", "banan")
+      .withTagAdded("apa", "kaka"));
+
     val book2 = Book.of("1234567892", "Polar Journey",
-      "Iorek Polarson", 12.90, "publisher2");
-    bookRepository.save(book1);
+        "Iorek Polarson", 12.90, "publisher2")
+      .withReferenceTo(book1);
     bookRepository.save(book2);
   }
 }
