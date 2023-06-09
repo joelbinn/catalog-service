@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
-import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,6 +45,6 @@ class BookRepositoryTest {
     // WHEN
     val maybeBook = bookRepository.findByIsbn(book2.isbn());
     // THEN
-    assertThat(maybeBook).isPresent().get().extracting(Book::referencedBook).isEqualTo(AggregateReference.to(book1.id()));
+    assertThat(maybeBook).isPresent().get().extracting(Book::bookReferences).isEqualTo(book2.bookReferences());
   }
 }

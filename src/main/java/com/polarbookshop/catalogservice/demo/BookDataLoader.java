@@ -23,9 +23,14 @@ public class BookDataLoader {
       .withTagAdded("stuff", "banan")
       .withTagAdded("apa", "kaka"));
 
-    val book2 = Book.of("1234567892", "Polar Journey",
+    val book2 = bookRepository.save(Book.of("9234567891", "Ice Age",
+        "Aurora Borealis", 567.0, "publisher12")
+      .withTagAdded("mega", "stuff"));
+
+    val book3 = Book.of("1234567892", "Polar Journey",
         "Iorek Polarson", 12.90, "publisher2")
-      .withReferenceTo(book1);
-    bookRepository.save(book2);
+      .withReferenceTo(book1)
+      .withReferenceTo(book2);
+    bookRepository.save(book3);
   }
 }

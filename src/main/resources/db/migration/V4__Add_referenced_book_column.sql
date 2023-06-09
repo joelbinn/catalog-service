@@ -1,3 +1,5 @@
-ALTER TABLE book
-    ADD COLUMN referenced_book BIGINT NULL references book(id);
+CREATE TABLE book_reference (
+    book BIGINT NOT NULL references book(id),
+    referenced_book BIGINT NOT NULL references book(id)
+);
 

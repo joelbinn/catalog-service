@@ -33,8 +33,10 @@ public record Book(
   @PositiveOrZero(message = "Price must be positive or zero.")
   Double price,
   String publisher,
+  @NotNull(message = "Tags must not be null (but it may be empty).")
   Set<Tag> tags,
-  AggregateReference<Book, Long> referencedBook,
+  @NotNull(message = "Book references must not be null (but it may be empty).")
+  Set<BookReference> bookReferences,
   // Metadata
   @Version
   int version,
@@ -44,7 +46,7 @@ public record Book(
   LocalDateTime lastModifiedDate
 ) {
   public static Book of(String isbn, String title, String author, Double price, String publisher) {
-    return new Book(null, isbn, title, author, price, publisher, Set.of(), null, 0, null, null);
+    return new Book(null, isbn, title, author, price, publisher, Set.of(), Set.of(), 0, null, null);
   }
 
   public Book withTagAdded(String name, String value) {
@@ -53,6 +55,6 @@ public record Book(
   }
 
   public Book withReferenceTo(Book book) {
-    return this.withReferencedBook(AggregateReference.to(book.id()));
+    return this.withBookReferences(Stream.concat(this.bookReferences.stream(), Stream.of(new BookReference(AggregateReference.to(book.id())))).collect(toSet()));
   }
 }
