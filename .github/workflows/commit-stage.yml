@@ -1,5 +1,9 @@
 name: Commit stage
 on: push
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: joelbinn/catalog-service
+  VERSION: latest
 
 jobs:
   build:
