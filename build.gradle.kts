@@ -22,8 +22,8 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2021.0.6"
-extra["testcontainersVersion"] = "1.17.3"
+extra["springCloudVersion"] = "2022.0.3"
+extra["testcontainersVersion"] = "1.18.3"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")

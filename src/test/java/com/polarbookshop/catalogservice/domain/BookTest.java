@@ -3,8 +3,8 @@ package com.polarbookshop.catalogservice.domain;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +13,7 @@ class BookTest {
 
   @BeforeAll
   static void beforeAll() {
-    ValidatorFactory factory = javax.validation.Validation.buildDefaultValidatorFactory();
+    ValidatorFactory factory = jakarta.validation.Validation.buildDefaultValidatorFactory();
     validator = factory.getValidator();
   }
 
