@@ -10,7 +10,7 @@ val snippetsDir = file("build/generated-snippets")
 
 group = "com.polarbookshop"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20
 
 configurations {
     compileOnly {
