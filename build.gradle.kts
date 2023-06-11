@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "2.7.11"
+    id("org.springframework.boot") version "3.1.0"
     id("io.spring.dependency-management") version "1.1.0"
     id("org.asciidoctor.jvm.convert") version "3.3.2"
 }
@@ -22,8 +22,8 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2021.0.6"
-extra["testcontainersVersion"] = "1.17.3"
+extra["springCloudVersion"] = "2022.0.3"
+extra["testcontainersVersion"] = "1.18.3"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
