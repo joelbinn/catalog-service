@@ -12,7 +12,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -31,7 +34,7 @@ public record Book(
   String author,
   @NotNull(message = "Price must not be null.")
   @PositiveOrZero(message = "Price must be positive or zero.")
-  Double price,
+  BigDecimal price,
   String publisher,
   @NotNull(message = "Tags must not be null (but it may be empty).")
   Set<Tag> tags,
@@ -46,7 +49,7 @@ public record Book(
   LocalDateTime lastModifiedDate
 ) {
   public static Book of(String isbn, String title, String author, Double price, String publisher) {
-    return new Book(null, isbn, title, author, price, publisher, Set.of(), Set.of(), 0, null, null);
+    return new Book(null, isbn, title, author, Optional.ofNullable(price).map(BigDecimal::valueOf).orElseThrow(), publisher, Set.of(), Set.of(), 0, null, null);
   }
 
   public Book withTagAdded(String name, String value) {
